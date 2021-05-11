@@ -1,0 +1,111 @@
+import RPi.GPIO as GPIO          
+from time import sleep
+from rplidar import RPLidar
+
+#definine the motor pin for dc motor
+in1 = 26 #for direction motor 1
+in2 = 16 #for direction motor 2
+en1= 19 #pwm signal motor 1
+en2= 20 #pwm signal motor 2
+temp1=1
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(in1,GPIO.OUT)
+GPIO.setup(in2,GPIO.OUT)
+GPIO.setup(en1,GPIO.OUT)
+GPIO.setup(en2,GPIO.OUT)
+GPIO.output(in1, GPIO.HIGH)
+GPIO.output(in2, GPIO.HIGH)
+
+p1=GPIO.PWM(en1,500) #500 is frequency for motor1
+p2=GPIO.PWM(en2,500)
+p1.start(0)
+p2.start(0)
+print("\n")
+print("The default speed & direction of motor is LOW & Forward.....")
+print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
+print("\n")    
+
+while(1):
+    x = raw_input()
+
+    if x=='r':
+        print("run")
+        if(temp1==0):
+         GPIO.output(in1,GPIO.HIGH)
+         GPIO.output(in2,GPIO.LOW)
+         print("forward")
+         x='z'
+        else:
+         GPIO.output(in1,GPIO.LOW)
+         GPIO.output(in2,GPIO.HIGH)
+         print("forward")
+         x='z'
+
+
+    elif x=='s':
+        print("stop")
+        p1.ChangeDutyCycle(0)
+        p2.ChangeDutyCycle(0)
+        x='z'
+
+    elif x=='b':
+        print("backward")
+        GPIO.output(in1,GPIO.HIGH)
+        GPIO.output(in2,GPIO.LOW)
+        temp1=0
+        x='z'
+
+    elif x=='f':
+        print("forward")
+        GPIO.output(in1,GPIO.LOW)
+        GPIO.output(in2,GPIO.HIGH)
+        temp1=1
+        x='z'
+
+    elif x=='l':
+        print("low")
+        p1.ChangeDutyCycle(31)
+        p2.ChangeDutyCycle(25)
+        x='z'
+
+    elif x=='m':
+        print("medium")
+        p1.ChangeDutyCycle(40)
+        p2.ChangeDutyCycle(40)
+        x='z'
+
+    elif x=='h':
+        print("high")
+        p1.ChangeDutyCycle(45)
+        p2.ChangeDutyCycle(45)
+        x='z'
+
+    elif x=='2':
+         print('left')
+         GPIO.output(in1,GPIO.HIGH)
+         GPIO.output(in2,GPIO.HIGH)
+         p1.ChangeDutyCycle(25)
+         p2.ChangeDutyCycle(25)
+         templ=1
+
+    elif x=='3':
+         print('right')
+         GPIO.output(in1,GPIO.LOW)
+         GPIO.output(in2,GPIO.LOW)
+         p1.ChangeDutyCycle(35)
+         p2.ChangeDutyCycle(35)
+         templ=1
+
+    elif x=='e':
+         GPIO.cleanup()
+         print('GPIO cleanup')
+         break 
+ 
+#      else:
+#          print("<<<  wrong data  >>>")
+#          print("please enter the defined data to continue.....")
+
+
+
+
